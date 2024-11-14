@@ -1,6 +1,9 @@
 <?php
 
+
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MainController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,10 +16,35 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('main');
+//Authentificate
+
+Route::get('/auth/signup',[AuthController::class,'signup']);
+Route::post('/auth/registr', [AuthController::class,'registr']); 
+
+
+
+
+
+
+
+Route::get('/', [MainController::class,'index']); 
+Route::get('/galery/{img}/{name}', function($img,$name){
+    return view('main.galery',['img'=>$img,'name'=>$name]);
 });
 
+
+Route::get('/about', function () {
+    return view('main.about');
+});
+
+Route::get('/contact', function () {
+    $data = [
+        'city'=>'Moscow',
+        'street'=>'Semenovskaya',
+        'house'=>38,
+    ];
+    return view('main.contact',['data'=> $data]);
+});
 // Route::get('/', function () {
 //     return view('welcome');
 // });
