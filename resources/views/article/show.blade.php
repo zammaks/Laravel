@@ -1,5 +1,21 @@
 @extends ('layout')
 @section('content')
+@if ($errors->any())
+  <div class="danger">
+    <ul>
+      @foreach ($errors->all() as $error)
+         <li class='alert alert-danger'>
+          {{$error}}
+         </li>
+      @endforeach
+    </ul>
+  </div>
+@endif
+@if (session('status'))
+  <div class="alert alert-success" role="alert">
+    {{ session('status') }}
+  </div>
+@endif
 <div class="card text-center mb-3" style="width: 80rem;">
 <div class="card-header">
   <b>Author:</b>{{$user->name}}
@@ -17,11 +33,40 @@
     </div>
   </div>
 </div>
-<div class="card text-bg-primary mb-3" style="max-width: 20rem;">
-  <div class="card-header"></div>
-  <div class="card-body">
-    <h5 class="card-title">Primary card title</h5>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+<h4>Add comment</h4>
+<form action="/comment" method="POST">
+  @csrf
+  <div class="mb-3">
+    <label for="name" class="form-label">Name</label>
+    <input type="text" class="form-control" id="name" name="name">
   </div>
-</div>
+  <div class="mb-3">
+    <label for="desc" class="form-label">Description</label>
+    <input type="text" class="form-control" id="desc" name="desc">
+  </div>
+  <!-- <div class="mb-3">
+    <label for="email" class="form-label">Email address</label>
+    <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp">
+  </div> -->
+  <input type="hidden" value="{{ $article->id }}" name="article_id">
+
+  <button type="submit" class="btn btn-primary mb-3">Save article</button>
+</form>
+@foreach ($comments  as $comment)
+  <div class="card text-bg-primary mb-3" style="max-width: 20rem;">
+    <div class="card-header">{{ $comment->created_at->format('F d, Y \a\t H:i') }}</div>
+    <div class="card-body">
+      <h4 class="card-title">{{$comment->user->name}}</h4>
+      <h5 class="card-title">{{$comment->name}}</h5>
+      <p class="card-text">{{$comment->desc}}</p>
+    </div>
+    <div class="d-flex justify-content-center gap-3 mb-3">
+        <a href="/comment/{{$comment->id}}/edit" class="btn btn-primary">Edit comment</a>
+        <form action="/comment/{{$comment->id}}/delete" method="get">
+            @csrf
+            <button type="submit" class="btn btn-danger">Delete comment</button>
+        </form>
+    </div>
+  </div>
+@endforeach
 @endsection
