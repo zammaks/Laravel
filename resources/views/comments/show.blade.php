@@ -11,23 +11,23 @@
 <table class="table">
   <thead>
     <tr>
-      <th scope="col">Date</th>
+      <th scope="col">Article</th>
       <th scope="col">Name</th>
       <th scope="col">Description</th>
       <th scope="col">Author</th>
     </tr>
   </thead>
   <tbody>
-    @foreach ($comments as $article)
+    @foreach ($comments as $comment)
     <tr>
-      <th scope="row">{{$comment->date}}</th>
+      <th scope="row">{{$comment->article_id}}</th>
       <!-- <td><a href="/comment/{{$comment->id}}">{{$comment->name}}</a></td> -->
+      <td>{{$comment->name}}</td>
+
       <td>{{$comment->desc}}</td>
-      <!-- <td>{{ $article->user_id }}</td>  -->
-      <td>{{ User::findOrFail($article->user_id)->name}}</td> 
+      <td>{{ User::findOrFail($comment->user_id)->name}}</td>
     </tr>
-    @endforeach
+  @endforeach
   </tbody>
 </table>
-{{$articles->links() }}
 @endsection

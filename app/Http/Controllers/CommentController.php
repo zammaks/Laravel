@@ -11,7 +11,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
-{
+{       
+    public function index()
+    {
+        $comments = Comment::all();
+        return view('comments.show', ['comments' => $comments]);
+    }
+
     public function store(Request $request){
         $request->validate([
             'name'=>'required|min:3',

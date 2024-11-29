@@ -38,6 +38,9 @@ Route::controller( CommentController::class)->prefix('/comment')->middleware('au
     Route::get('/{id}/edit', 'edit'); 
     Route::post('/{comment}/update', 'update');  
     Route::get('/{id}/delete', 'delete');  
+    Route::get('/', 'edit'); 
+    Route::get('/index', 'index');
+
 });
 
 
