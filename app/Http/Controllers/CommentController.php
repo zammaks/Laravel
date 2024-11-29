@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 use App\Models\Comment;
-use App\Models\User;
+// use App\Models\User;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
+
+
 
 use Illuminate\Http\Request;
 
@@ -17,7 +21,7 @@ class CommentController extends Controller
         $comment = new Comment;
         $comment->name = request('name');
         $comment->desc = request('desc');
-        $comment->user_id = 1;
+        $comment->user_id = Auth::id();
         $comment->article_id = request('article_id');
         $comment->save();
         return redirect()->back()->with('status', 'Comment added successfully! Please check your comments.');
@@ -27,6 +31,7 @@ class CommentController extends Controller
     public function delete($id)
     {   
         $comment = Comment::findOrFail($id);
+        Gate::authorize('update-comment', $comment );  // added this line
         if ($comment->delete()){
             // return redirect('/article')->with('status', 'Delete successfully!');
             return redirect()->back()->with('status', 'Delete successfully!');
@@ -37,10 +42,12 @@ class CommentController extends Controller
 
     public function edit($id){
         $comment = Comment::findOrFail($id);
+        Gate::authorize('update-comment', $comment );  // added this line
         return view('comments.update', ['comment'=> $comment]);
     }
 
     public function update(Request $request, Comment $comment){
+        Gate::authorize('update-comment', $comment );  // added this line
         $request->validate([
             'name'=>'required|min:5|max:100',
             'desc'=>'required|min:5',

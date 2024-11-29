@@ -50,7 +50,7 @@
   </div> -->
   <input type="hidden" value="{{ $article->id }}" name="article_id">
 
-  <button type="submit" class="btn btn-primary mb-3">Save article</button>
+  <button type="submit" class="btn btn-primary mb-3">Save comment</button>
 </form>
 @foreach ($comments  as $comment)
   <div class="card text-bg-primary mb-3" style="max-width: 20rem;">
@@ -61,11 +61,13 @@
       <p class="card-text">{{$comment->desc}}</p>
     </div>
     <div class="d-flex justify-content-center gap-3 mb-3">
+      @can ('update-comment', $comment)
         <a href="/comment/{{$comment->id}}/edit" class="btn btn-primary">Edit comment</a>
         <form action="/comment/{{$comment->id}}/delete" method="get">
             @csrf
             <button type="submit" class="btn btn-danger">Delete comment</button>
         </form>
+      @endcan
     </div>
   </div>
 @endforeach

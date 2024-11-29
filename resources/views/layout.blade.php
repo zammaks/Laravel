@@ -53,7 +53,13 @@
                         </ul>
                         </li> -->
                     </ul>
-                    <a href="/auth/signup" class="btn btn-outline-success">Sign Up</a>
+                    @guest
+                        <a href="/auth/signup" class="btn btn-outline-success me-3">Sign Up</a>
+                        <a href="/auth/login" class="btn btn-outline-success me-3">Sign In</a>
+                    @endguest
+                    @auth
+                        <a href="/auth/logout" class="btn btn-outline-success">Logout</a>
+                    @endauth
                 </div>
             </div>
         </nav>
