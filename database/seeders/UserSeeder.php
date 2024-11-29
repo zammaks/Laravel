@@ -20,6 +20,12 @@ class UserSeeder extends Seeder
             'password' => Hash::make('123456'),
             'role' => 'moderator',
         ]);
+        User::create([
+            'name' => 'max',
+            'email' => 'max@mail.ru',
+            'password' => Hash::make('123456'),
+            'role' => 'moderator',
+        ]);
 
         User::factory(9)->create();
         // User::factory()->create([
