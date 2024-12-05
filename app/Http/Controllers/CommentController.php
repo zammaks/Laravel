@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers;
 use App\Models\Comment;
+use App\Models\Article;
+use App\Jobs\VryLongJob;
+
+
+
 // use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
+
 
 
 
@@ -14,11 +20,12 @@ class CommentController extends Controller
 {       
     public function index()
     {
-        $comments = Comment::all();
+        $comments = Comment::latest()->paginate(10);
         return view('comments.show', ['comments' => $comments]);
     }
 
     public function store(Request $request){
+        $article = Article::findOrFail($request->article_id);
         $request->validate([
             'name'=>'required|min:3',
             'desc'=>'required|max:256',
@@ -29,10 +36,11 @@ class CommentController extends Controller
         $comment->desc = request('desc');
         $comment->user_id = Auth::id();
         $comment->article_id = request('article_id');
-        $comment->save();
-        return redirect()->back()->with('status', 'Comment added successfully! Please check your comments.');
+        if ($comment->save()){
+            VryLongJob::dispatch($comment,$article->name);
+            return redirect()->back()->with('status', 'Сomment has been saved and is awaiting moderation.');
         
-    }
+    }}
 
     public function delete($id)
     {   
@@ -44,6 +52,18 @@ class CommentController extends Controller
         } else {
             return redirect()->route('article.show',['commment' => $comment->id])->with('status', 'Delete failed! Please try again.');
         }; 
+    }
+
+    public function accept(Comment $comment){
+        $comment->accept=true;
+        $comment->save();
+        return redirect()->route('comment.index');
+    }
+
+    public function reject(Comment $comment){
+        $comment->accept=false;
+        $comment->save();
+        return redirect()->route('comment.index');
     }
 
     public function edit($id){

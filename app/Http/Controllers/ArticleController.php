@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewArticleEvent;
 use App\Models\Article;
+use App\Models\Comment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -43,7 +45,9 @@ class ArticleController extends Controller
         $article->name = $request->name;
         $article->desc = $request->desc;
         $article->user_id = 1;
-        $article->save();
+        if ($article->save()){
+            NewArticleEvent::dispatch($article);
+        };
         return redirect('/article');
     }
 
@@ -53,7 +57,8 @@ class ArticleController extends Controller
     public function show(Article $article)
     {
         $user = User::findOrFail($article->user_id);
-        $comments = $article->comments()->with('user')->get();
+        // $comments = $article->comments()->with('user')->get();
+        $comments = Comment::where('article_id', $article->id)->where('accept',true)->get();
         return view('article.show', ['article' => $article, 'user' => $user, 'comments' => $comments]);
     }
 
